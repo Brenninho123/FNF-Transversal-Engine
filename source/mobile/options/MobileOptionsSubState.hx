@@ -27,12 +27,6 @@ import flixel.input.keyboard.FlxKey;
 import options.BaseOptionsMenu;
 import options.Option;
 
-#if mobile
-enum OptionType {
-	storageTypes;
-}
-#end
-
 class MobileOptionsSubState extends BaseOptionsMenu
 {
 	#if android
