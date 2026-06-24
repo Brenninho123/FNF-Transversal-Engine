@@ -40,37 +40,12 @@ jobs:
         if: inputs.name == 'Linux'
         run: sudo apt install libvlc-dev libvlccore-dev
 
-      - name: Install Haxelib
-        continue-on-error: true
-        if: inputs.os == 'windows-2022'
-        run: |
-          haxelib setup C:/haxelib
-          haxelib install hxcpp > /dev/null --quiet
-          .\"setup/windows.bat"
-        shell: cmd
-
       - name: Install Libraries
-        continue-on-error: true
         run: |
-          sudo apt-get install libvlc-dev
-          sudo apt-get install libvlccore-dev
-          haxelib setup ~/haxelib
-          haxelib install hxcpp > /dev/null --quiet
-          chmod +x ./setup/unix.sh
-          sh ./setup/unix.sh
-
-      - name: Skip SScript setup mode
-        continue-on-error: true
-        run: echo 'oy9:showMacroty8:loopCosti25y10:includeAllfg' >> ~/settings.cocoa
-        if: inputs.os == 'windows-2022'
-        shell: cmd
-
-      - name: Create Version Tag
-        continue-on-error: true
-        run: echo "${{github.run_id}}" > VERSION
+          haxelib install hmm --quiet
+          haxelib run hmm install --quiet
 
       - name: Configure Android
-        continue-on-error: true
         if: inputs.name == 'Android'
         run: |
           haxelib run lime config ANDROID_SDK $ANDROID_HOME
@@ -79,7 +54,6 @@ jobs:
           haxelib run lime config ANDROID_SETUP true
 
       - name: Compile
-        continue-on-error: true
         run: haxelib run lime build ${{ inputs.buildArgs }}
 
       - name: Make IPA
