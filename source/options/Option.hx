@@ -14,6 +14,10 @@ enum OptionType {
 	PERCENT;
 	STRING;
 	KEYBIND;
+
+	#if android
+	storageTypes;
+	#end
 }
 
 class Option
