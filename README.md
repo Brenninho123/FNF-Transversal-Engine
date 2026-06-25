@@ -24,6 +24,7 @@ There you can learn how to use the 212 PlayState funcions in your mod!
 
 ## Template Credits:
 * Ali Alafandy - Templator.
+* Brenninho840 - Compiler.
 
 ## Mobile Credits:
 * Homura - Head Porter of Psych Engine Mobile.
