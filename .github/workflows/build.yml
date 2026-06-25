@@ -45,6 +45,14 @@ jobs:
           haxelib install hmm --quiet
           haxelib run hmm install --quiet
 
+      - name: Patch Flixel Android manifest bug
+        if: inputs.name == 'Android'
+        run: |
+          FLIXEL_DIR=$(haxelib path flixel | tail -n 1 | sed 's:/*$::')
+          echo "Patching $FLIXEL_DIR/include.xml"
+          sed -i 's/ if="\${lime &ge; 8.2.0}"//' "$FLIXEL_DIR/include.xml"
+          grep -n "appCategory" "$FLIXEL_DIR/include.xml"
+
       - name: Configure Android
         if: inputs.name == 'Android'
         run: |
