@@ -48,10 +48,12 @@ jobs:
       - name: Patch Flixel Android manifest bug
         if: inputs.name == 'Android'
         run: |
-          FLIXEL_DIR=$(haxelib path flixel | tail -n 1 | sed 's:/*$::')
-          echo "Patching $FLIXEL_DIR/include.xml"
-          sed -i 's/ if="\${lime &ge; 8.2.0}"//' "$FLIXEL_DIR/include.xml"
-          grep -n "appCategory" "$FLIXEL_DIR/include.xml"
+          HAXELIB_REPO=$(haxelib config)
+          FLIXEL_INCLUDE="$HAXELIB_REPO/flixel/5,6,1/include.xml"
+          echo "Patching $FLIXEL_INCLUDE"
+          test -f "$FLIXEL_INCLUDE" || { echo "include.xml not found in $FLIXEL_INCLUDE"; exit 1; }
+          perl -pi -e 's/ if="\$\{lime &ge; 8\.2\.0\}"//' "$FLIXEL_INCLUDE"
+          grep -n "appCategory" "$FLIXEL_INCLUDE"
 
       - name: Configure Android
         if: inputs.name == 'Android'
