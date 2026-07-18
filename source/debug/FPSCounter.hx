@@ -8,10 +8,6 @@ import openfl.text.TextFormat;
 import openfl.system.System as OpenFlSystem;
 import lime.system.System as LimeSystem;
 
-/**
-	The FPS class provides an easy-to-use monitor to display
-	the current frame rate of an OpenFL project
-**/
 #if cpp
 #if windows
 @:cppFileCode('#include <windows.h>')
@@ -23,14 +19,7 @@ import lime.system.System as LimeSystem;
 #end
 class FPSCounter extends TextField
 {
-	/**
-		The current frame rate, expressed using frames-per-second
-	**/
 	public var currentFPS(default, null):Int;
-
-	/**
-		The current memory usage (WARNING: this is NOT your total program memory usage, rather it shows the garbage collector memory)
-	**/
 	public var memoryMegas(get, never):Float;
 
 	@:noCompletion private var times:Array<Float>;
@@ -39,18 +28,9 @@ class FPSCounter extends TextField
 	@:noCompletion private var framesCount:Int;
 	@:noCompletion private var prevTime:Int;
 
-	public var os:String = '';
-
 	public function new(x:Float = 10, y:Float = 10, color:Int = 0x000000)
 	{
 		super();
-
-		#if !officialBuild
-		if (LimeSystem.platformName == LimeSystem.platformVersion || LimeSystem.platformVersion == null)
-			os = '\nOS: ${LimeSystem.platformName}' #if cpp + ' ${getArch() != 'Unknown' ? getArch() : ''}' #end;
-		else
-			os = '\nOS: ${LimeSystem.platformName}' #if cpp + ' ${getArch() != 'Unknown' ? getArch() : ''}' #end + ' - ${LimeSystem.platformVersion}';
-		#end
 
 		positionFPS(x, y);
 
@@ -68,13 +48,9 @@ class FPSCounter extends TextField
 		updateTime = prevTime + 500;
 	}
 
-
-	public dynamic function updateText():Void // so people can override it in hscript
+	public dynamic function updateText():Void
 	{
-		text = 
-		'FPS: $currentFPS' + 
-		'\nMemory: ${flixel.util.FlxStringUtil.formatBytes(memoryMegas)}' +
-		os;
+		text = 'FPS: $currentFPS';
 
 		textColor = 0xFFFFFFFF;
 		if (currentFPS < FlxG.stage.window.frameRate * 0.5)
@@ -86,7 +62,6 @@ class FPSCounter extends TextField
 	{
 		if (ClientPrefs.data.fpsRework)
 		{
-			// Flixel keeps reseting this to 60 on focus gained
 			if (FlxG.stage.window.frameRate != ClientPrefs.data.framerate && FlxG.stage.window.frameRate != FlxG.game.focusLostFramerate)
 				FlxG.stage.window.frameRate = ClientPrefs.data.framerate;
 
@@ -102,7 +77,6 @@ class FPSCounter extends TextField
 				updateTime = currentTime + 500;
 			}
 
-			// Set Update and Draw framerate to the current FPS every 1.5 second to prevent "slowness" issue
 			if ((FlxG.updateFramerate >= currentFPS + 5 || FlxG.updateFramerate <= currentFPS - 5)
 				&& haxe.Timer.stamp() - lastFramerateUpdateTime >= 1.5
 				&& currentFPS >= 30)
@@ -117,7 +91,7 @@ class FPSCounter extends TextField
 			times.push(now);
 			while (times[0] < now - 1000)
 				times.shift();
-			// prevents the overlay from updating every frame, why would you need to anyways @crowplexus
+
 			if (deltaTimeout < 50)
 			{
 				deltaTimeout += deltaTime;
@@ -134,7 +108,8 @@ class FPSCounter extends TextField
 	inline function get_memoryMegas():Float
 		return cpp.vm.Gc.memInfo64(cpp.vm.Gc.MEM_INFO_USAGE);
 
-	public inline function positionFPS(X:Float, Y:Float, ?scale:Float = 1){
+	public inline function positionFPS(X:Float, Y:Float, ?scale:Float = 1)
+	{
 		scaleX = scaleY = #if android (scale > 1 ? scale : 1) #else (scale < 1 ? scale : 1) #end;
 		x = FlxG.game.x + X;
 		y = FlxG.game.y + Y;
