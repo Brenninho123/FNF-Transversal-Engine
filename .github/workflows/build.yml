@@ -1,0 +1,59 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: krdlab/setup-haxe@v2
+        with:
+          haxe-version: 4.3.6
+
+      - run: haxe -version
+
+      - run: haxelib install hmm --quiet
+      - run: haxelib run hmm install
+
+      - run: haxelib install lime --quiet
+      - run: haxelib run lime setup -y
+
+      - run: haxelib run lime build windows -release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Transversal Engine (Windows)
+          path: export/release/windows/bin
+
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: krdlab/setup-haxe@v2
+        with:
+          haxe-version: 4.3.6
+
+      - run: haxe -version
+
+      - run: haxelib install hmm --quiet
+      - run: haxelib run hmm install
+
+      - run: haxelib install lime --quiet
+
+      - name: Setup Android
+        run: |
+          printf 'y\n' | haxelib run lime setup android
+
+      - run: haxelib run lime build android -release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Transversal Engine (Android)
+          path: export/release/android/bin/app/build/outputs/apk/release
